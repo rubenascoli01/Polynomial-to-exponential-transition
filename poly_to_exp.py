@@ -205,7 +205,7 @@ for n in range(3, N):
 	P = 4 * (n * (n**2 - ((n-1)%2+1)**2) / 24 - (g3[n]+1)) # Initial P = 4(d(n)-1)
 	Delta_max = math.floor((max(0, n*(n-1)*(n+1)/3 - 8*(g3[n]+1)))**0.5) # Compute Delta_max
 	Delta = -1 # Initial Delta
-	while True: # No limit on the number of iterations in Corollary B.1
+	while True: # No limit on the number of iterations in Lemma B.1
 		Delta_new = Delta_max
 		while (Delta_new > Delta):
 			if no_counterexample(n, Delta_new, P):
