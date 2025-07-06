@@ -120,14 +120,14 @@ def max_bad_edges(u, x_star, y_star, Delta, P): # Computes the maximum possible 
 		tau = math.floor(C_b_xy * b_xy + C_P2_b_xy * (math.floor(P/2) - b_xy) + x_bar_max * y_bar_max)
 		# The rest of the function computes an upper bound on max_{X^*} b_U and max_{Y^*} b_U and checking that we are in a configuration allowed by (12) and (13) of Lemma 4.18
 		# Two different strategies to bound max_{X^*} b_U and max_{Y^*} b_U, depending on whether n>=70 or n<70
-		# For n>=70, if (19) holds and either b_max is undefined or (12) fails to hold, then we discard this case
+		# For n>=70, if (19) holds, use Lemma B.2 to compute b_max
 		if n >= 70 and bip(x_star) + bip(y_star) + bip(u) + tau <= g3[n]-g3[n-1]: 
 			# Binary search to find upper bounds on max_{X^*} b_U and max_{Y^*} b_U as outlined by Lemma B.2
 			# We call these upper bounds b_max_X and b_max_Y in this code
 			# Note that the LHS in (20) is not monotone in b. However, it is convex, so it suffices to do the following:
-			# First, test b = u; if it works, we're done
+			# First, test b = u; if it satisfies (20), then b_max = u
 			# If b = u doesn't work, test b = 0. If that doesn't work, then by convexity, no b works, and we discard this case
-			# If b = u doesn't work while b = 0 does, then we do binary search to find the maximum b that works
+			# If b = u doesn't work while b = 0 does, then we do binary search to find the maximum b satisfying (20)
 			if b_is_valid(x_star, y_star, u, u, tau):
 				b_max_X = u
 			else:
@@ -157,10 +157,10 @@ def max_bad_edges(u, x_star, y_star, Delta, P): # Computes the maximum possible 
 					else:
 						b_max_Y_right = b_max_Y_middle
 				b_max_Y = b_max_Y_left
-			# (19) holds, so if (12) does not, we discard this case.
+			# If (12) does not hold, we discard this case.
 			if (u - b_max_X - b_max_Y) * b_xy > math.floor(P/2):
 				continue
-		# For n < 70, we use Lemmas B.3 and B.4 to find b_max_X and b_max_Y
+		# For n < 70, we use Lemmas B.3 and B.4 to find upped bounds on max_{X^*} b_U and max_{Y^*} b_U
 		else:
 			# First use Lemma B.3 to bound b_max_X and b_max_Y
 			b_max_X = u 
@@ -192,7 +192,7 @@ def max_bad_edges(u, x_star, y_star, Delta, P): # Computes the maximum possible 
 				continue
 			# Check that (13) of Lemma 4.18 holds
 			if (u - b_max_X - b_max_Y) * b_xy > b_xy*(b_xy-1)/2 + b_xy * (x_bar_max + y_bar_max + min(b_max_X, b_max_Y)):
-				continue # We can recolor all crossing edges to color c* without losing monochromatic triangles
+				continue 
 		max_total_bad_edges = max(max_total_bad_edges, tau)
 	return max_total_bad_edges
 
@@ -218,7 +218,7 @@ for n in range(3, N):
 	eta.append(eta_initial) # We will call check_assumptions to modify this if needed
 
 	P = 4 * (n * (n**2 - ((n-1)%2+1)**2) / 24 - (g3[n]+1)) # Initial P = 4(d(n)-1)
-	Delta_max = math.floor((max(0, n*(n-1)*(n+1)/3 - 8*(g3[n]+1)))**0.5) # Compute Delta_max
+	Delta_max = math.floor((max(0, n*(n-1)*(n+1)/3 - 8*(g3[n]+1)))**0.5) # Compute Delta_max according to (18)
 	Delta = -1 # Initial Delta
 	while True: # No limit on the number of iterations in Lemma B.1
 		Delta_new = Delta_max
