@@ -1,1 +1,1 @@
-The paper to which this code is associated will be placed on arXiv soon.
+This computer program is associated to the paper "Polynomial-to-exponential transition in 3-uniform Ramsey numbers" by Ruben Ascoli, Xiaoyu He, and Hung-Hsun Hans Yu, which can be found at https://arxiv.org/abs/2507.09434.
